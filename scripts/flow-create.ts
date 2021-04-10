@@ -1,6 +1,6 @@
 const SuperfluidSDK = require("@superfluid-finance/js-sdk");
-import { Web3Provider } from "@ethersproject/providers";
 import { ethers } from "hardhat";
+import address from "./address";
 
 const testFlow = async () => {
   const [signer] = await ethers.getSigners();
@@ -14,7 +14,7 @@ const testFlow = async () => {
   await sf.cfa.createFlow({
     superToken: "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00",
     sender: signer.address,
-    receiver: "0xe53fd0c24F83b447EB3D3C4Df9CBcaC7f81dcdcF",
+    receiver: address,
     flowRate: "3",
     userData: abicoder.encode(
       ["uint256", "bytes"],

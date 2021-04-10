@@ -1,12 +1,9 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { providers } from "ethers";
 import { ethers } from "hardhat";
-import address from "./address";
 import path from "path";
 import fs from "fs";
+import address from "./address";
 
-const projectKey =
-  "wss://goerli.infura.io/ws/v3/98b0477e69b1415cbaf0c6b49da3206a";
 const abi = JSON.parse(
   fs
     .readFileSync(
@@ -19,9 +16,18 @@ const abi = JSON.parse(
 ).abi;
 
 const main = async () => {
-  const websocketProvider = new ethers.providers.WebSocketProvider(projectKey);
-  const contract = new ethers.Contract(address, abi, websocketProvider);
-  contract.on({}, (data) => console.log(data));
+  const [singer] = await ethers.getSigners();
+  const contract = new ethers.Contract(address, abi, singer);
+  console.log(
+    await contract.createFlow(
+      "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00",
+      singer.address,
+      1,
+    //   {
+    //     gasLimit: 1000000,
+    //   }
+    )
+  );
 };
 
 main();

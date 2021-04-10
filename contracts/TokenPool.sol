@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Contract matic testnet address : 0x81010d6147Ac567865bB95D31E59569F16716800
+// Contract matic testnet address
 pragma solidity 0.7.6;
 pragma abicoder v2;
 
@@ -16,10 +16,11 @@ import {
   IConstantFlowAgreementV1
 } from "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IConstantFlowAgreementV1.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 import "hardhat/console.sol";
 
-contract TokenPool is SuperAppBase {
+contract TokenPool is SuperAppBase, Ownable {
   // Superfluid
   ISuperfluid private _superfluid_host; // host
   IConstantFlowAgreementV1 private _superfluid_cfa; // the stored constant flow agreement class address
@@ -31,6 +32,7 @@ contract TokenPool is SuperAppBase {
     int256 flowRate
   );
   event StreamConverstionRequest(address fromSuperToken, address toSuperToken);
+  event StreamCreated(address recipient, address superToken, int256 flowRate);
 
   constructor(ISuperfluid host, IConstantFlowAgreementV1 cfa) {
     // Verify superfluid addresses
@@ -56,17 +58,7 @@ contract TokenPool is SuperAppBase {
     _;
   }
 
-  function beforeAgreementCreated(
-    ISuperToken, /* superToken */
-    address, /* agreementClass */
-    bytes32, /*agreementId*/
-    bytes calldata, /*agreementData*/
-    bytes calldata /*ctx*/
-  ) external view override onlySuperfluidHost returns (bytes memory cbdata) {
-    cbdata = bytes("");
-  }
-
-  function handleCrossChainRequest(
+  function handleCrossChainRequestCreation(
     bytes calldata ctx,
     ISuperToken superToken,
     int256 flowRate
@@ -81,6 +73,35 @@ contract TokenPool is SuperAppBase {
       address(superToken),
       flowRate
     );
+  }
+
+  function createFlow(
+    ISuperToken superToken,
+    address recipient,
+    int96 flowRate
+  ) external onlyOwner {
+    _superfluid_host.callAgreement(
+      _superfluid_cfa,
+      abi.encodeWithSelector(
+        _superfluid_cfa.createFlow.selector,
+        superToken,
+        recipient,
+        flowRate,
+        new bytes(0)
+      ),
+      "0x"
+    );
+    emit StreamCreated(recipient, address(superToken), flowRate);
+  }
+
+  function beforeAgreementCreated(
+    ISuperToken, /* superToken */
+    address, /* agreementClass */
+    bytes32, /*agreementId*/
+    bytes calldata, /*agreementData*/
+    bytes calldata /*ctx*/
+  ) external view override onlySuperfluidHost returns (bytes memory cbdata) {
+    cbdata = bytes("");
   }
 
   function afterAgreementCreated(
@@ -101,7 +122,7 @@ contract TokenPool is SuperAppBase {
 
     // Cross Chain Request
     if (action == 1) {
-      handleCrossChainRequest(ctx, superToken, flowRate);
+      handleCrossChainRequestCreation(ctx, superToken, flowRate);
     }
 
     return ctx;
