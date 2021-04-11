@@ -48,6 +48,8 @@ contract TokenPool is SuperAppBase, Ownable {
   mapping(address => uint256[]) public userToStreamConversionIds;
   mapping(uint256 => CrossChainStream) public crossChainStreams;
   mapping(uint256 => TokenConversionStream) public tokenConversionStreams;
+  mapping(address => uint256) public userCrossChainStreamsCount;
+  mapping(address => uint256) public userStreamConversionCount;
 
   uint256 private nextCrossChainStreamId = 1;
   uint256 private nextTokenConversionId = 1;
@@ -90,6 +92,21 @@ contract TokenPool is SuperAppBase, Ownable {
       "onlySuperfluidHost: callback called from wrong sender"
     );
     _;
+  }
+
+  function getUserCrossChainStreams(address user)
+    external
+    view
+    returns (CrossChainStream[] memory)
+  {
+    CrossChainStream[] memory crossChainStreams =
+      new CrossChainStream[](userCrossChainStreamsCount[user]);
+    for (uint256 i = 0; i < userCrossChainStreamsCount[user]; ++i) {
+      crossChainStreams[i] = crossChainStreams[
+        userToCrossChainStreamIds[user][i]
+      ];
+    }
+    return crossChainStreams;
   }
 
   // Liquidity
@@ -149,6 +166,7 @@ contract TokenPool is SuperAppBase, Ownable {
       );
     crossChainStreams[id] = crossChainStream;
     userToCrossChainStreamIds[sender].push(id);
+    userCrossChainStreamsCount[sender] += 1;
 
     emit CrossChainStreamRequested(id);
   }
@@ -195,6 +213,7 @@ contract TokenPool is SuperAppBase, Ownable {
 
     tokenConversionStreams[id] = tokenConversionStream;
     userToStreamConversionIds[sender].push(id);
+    userStreamConversionCount[sender] += 1;
 
     _createFlow(targetToken, sender, flowRate);
   }

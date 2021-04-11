@@ -19,12 +19,12 @@ const main = async () => {
   const [signer] = await ethers.getSigners();
   //goerli
   const contract = new ethers.Contract(address, abi, signer);
-  console.log(
-    await contract.provideLiquidity(
-      "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00",
-      ethers.BigNumber.from("100000000000000000")
-    )
-  );
+  // console.log(
+  //   await contract.provideLiquidity(
+  //     "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00",
+  //     ethers.BigNumber.from("100000000000000000")
+  //   )
+  // );
 //   console.log(
 //     `liquidity provided: ${await contract.liquidityProvided(
 //       signer.address,
@@ -38,13 +38,13 @@ const main = async () => {
 //     )
 //   );
 
-//   // Ropsten
-//   console.log(
-//     await contract.provideLiquidity(
-//       "0xBF6201a6c48B56d8577eDD079b84716BB4918E8A",
-//       ethers.BigNumber.from("100000000000000000")
-//     )
-//   );
+  // Ropsten
+  console.log(
+    await contract.provideLiquidity(
+      "0xBF6201a6c48B56d8577eDD079b84716BB4918E8A",
+      ethers.BigNumber.from("100000000000000000")
+    )
+  );
 };
 
 main();
