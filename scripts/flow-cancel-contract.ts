@@ -19,10 +19,10 @@ const main = async () => {
   const [signer] = await ethers.getSigners();
   const contract = new ethers.Contract(address, abi, signer);
   console.log(
-    await contract.createFlow(
+    await contract.deleteFlow(
       "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00",
-      signer.address,
-      1
+      contract.address,
+      signer.address
     )
   );
 };
