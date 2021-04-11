@@ -18,7 +18,7 @@ const testFlow = async () => {
     flowRate: "3",
     userData: abicoder.encode(
       ["uint256", "bytes"],
-      [1, abicoder.encode(["uint256"], [80001])]
+      [1, abicoder.encode(["uint256"], [3])]
     ),
   });
 };

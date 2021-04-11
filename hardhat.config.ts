@@ -16,6 +16,10 @@ const config: HardhatUserConfig = {
       url: "https://goerli.infura.io/v3/98b0477e69b1415cbaf0c6b49da3206a",
       accounts: [process.env.PRIVATE_KEY as string],
     },
+    ropsten: {
+      url: "https://ropsten.infura.io/v3/98b0477e69b1415cbaf0c6b49da3206a",
+      accounts: [process.env.PRIVATE_KEY as string],
+    },
     kovan: {
       url: "https://kovan.infura.io/v3/98b0477e69b1415cbaf0c6b49da3206a",
       accounts: [process.env.PRIVATE_KEY as string],

@@ -11,13 +11,20 @@ const testFlow = async () => {
   await sf.initialize();
   const abicoder = new ethers.utils.AbiCoder();
 
-  await sf.cfa.deleteFlow({
+  await sf.cfa.createFlow({
     superToken: "0xf2d68898557ccb2cf4c10c3ef2b034b2a69dad00",
     sender: signer.address,
     receiver: address,
+    flowRate: "3",
     userData: abicoder.encode(
       ["uint256", "bytes"],
-      [1, abicoder.encode(["uint256"], [5])]
+      [
+        2,
+        abicoder.encode(
+          ["address"],
+          ["0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00"]
+        ),
+      ]
     ),
   });
 };

@@ -19,9 +19,13 @@ const main = async () => {
   const [signer] = await ethers.getSigners();
   const contractFactory = await ethers.getContractFactory("TokenPool");
   const contract = await contractFactory.deploy(
-    "0x22ff293e14F1EC3A09B137e9e06084AFd63adDF9",
-    "0xEd6BcbF6907D4feEEe8a8875543249bEa9D308E8"
+    "0x22ff293e14f1ec3a09b137e9e06084afd63addf9",
+    "0xed6bcbf6907d4feeee8a8875543249bea9d308e8"
   );
+  // const contract = await contractFactory.deploy(
+  //   "0xF2B4E81ba39F5215Db2e05B2F66f482BB8e87FD2",
+  //   "0xaD2F1f7cd663f6a15742675f975CcBD42bb23a88"
+  // );
   console.log(contract.address);
 };
 
